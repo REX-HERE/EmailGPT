@@ -1,6 +1,6 @@
 # Email RAG System
 
-This project is a Node.js application designed to manage email responses using a RAG (Red, Amber, Green) system for categorization.
+This project is a Node.js application designed to manage email responses using a RAG system for personalised work basewd on GPT 40
 
 ## Table of Contents
 
@@ -32,11 +32,3 @@ To start the application, run the following command:
 ```
 node src/index.js
 ```
-
-## Contributing
-
-Contributions are welcome! Please submit a pull request or open an issue for any enhancements or bug fixes.
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for more details.

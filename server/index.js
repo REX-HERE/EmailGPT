@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const { Pinecone, ServerlessSpec } = require('@pinecone-database/pinecone');
-const { PDFParser } = require('pdf-parse');
+const pdfParse = require('pdf-parse');
 const mammoth = require("mammoth");
 const OpenAI = require('openai');
 const { encode, decode } = require('gpt-tokenizer');
@@ -80,7 +80,7 @@ const processAttachment = async (attachment) => {
     
     // Handle PDF
     if (attachment.contentType === 'application/pdf') {
-      const data = await PDFParser(contentBuffer);
+      const data = await pdfParse(contentBuffer);
       return data.text;
     }
     // Handle Word DOCX
@@ -145,14 +145,15 @@ app.post('/api/emails', async (req, res) => {
                 const truncatedContent = chunk.text.length > 30000 ? chunk.text.slice(0, 30000) : chunk.text;
 
                 await index.upsert([{
-                    id: `${attachment.id}-chunk-${chunkIndex}`,
+                    id: `${(attachment.name || 'unnamed').replace(/\s+/g, '_')}-${attachment.id}-chunk-${chunkIndex}`,
                     values: embedding.data[0].embedding,
                     metadata: {
                         content: truncatedContent,
                         sender,
                         subject,
                         chunk_index: chunkIndex,
-                        total_chunks: chunks.length
+                        total_chunks: chunks.length,
+                        file_name: attachment.name || 'unnamed'
                     }
                 }]);
             }
